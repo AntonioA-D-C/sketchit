@@ -102,6 +102,14 @@ class CommentController extends Controller
      */
     public function destroy(comment $comment)
     {
-        //
+        try{
+            $comment->delete();
+            return response()->json(['message'=>"Successfully deleted comment", 'data'=>$comment ]);
+            } catch(Exception $e){
+             
+                //   throw new Error("An error occurred");
+                 return response()->json(["message"=>"An error occurred. It's possible this comment was deleted by the person who commented it", "error"=>$e]);
+               }
+    
     }
 }

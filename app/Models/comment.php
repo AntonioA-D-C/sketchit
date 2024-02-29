@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Like;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class comment extends Model
 {
@@ -22,5 +23,8 @@ class comment extends Model
     public function replies()
     {
         return $this->morphMany(Comment::class, 'commentable');
+    }
+    public function likes(){
+        return $this->morphMany(Like::class, "likeable");
     }
 }

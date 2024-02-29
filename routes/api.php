@@ -5,6 +5,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\CommentLikeController;
+use App\Http\Controllers\LikeController;
+use App\Http\Controllers\PostLikeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,6 +34,7 @@ Route::prefix('/post')->group(function(){
     Route::get("/{post}",  [PostController::class, 'show']);
     Route::delete("/{post}",  [PostController::class, 'destroy']);
     Route::patch("/{post}",  [PostController::class, 'edit']);
+      Route::post("/{post}/like",  [PostLikeController::class, 'like']);
   
 });
 Route::get("/comments",  [CommentController::class, 'index']);
@@ -40,6 +44,8 @@ Route::prefix('/comment')->group(function(){
     Route::get("/{comment}",  [CommentController::class, 'show']);
     Route::delete("/{comment}",  [CommentController::class, 'destroy']);
     Route::patch("/{comment}",  [CommentController::class, 'edit']);
+
+    Route::post("/{comment}/like",  [CommentLikeController::class, 'like']);
   
 });
 

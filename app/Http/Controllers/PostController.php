@@ -18,6 +18,7 @@ class PostController extends Controller
     {
         try{
       $posts = post::all();
+  
       return response()->json($posts);
         } catch(Exception $e){
          
@@ -84,8 +85,8 @@ class PostController extends Controller
     public function show(post $post)
     {
         try{
-        $post->load("has_user");
-        $post->load("comments");
+        $post->load("user");
+        $post->load("comments.replies");
         return response()->json(['data'=>$post ]);
         } catch(Exception $e){
          
