@@ -86,7 +86,7 @@ class PostController extends Controller
     {
         try{
         $post->load("user");
-        $post->load("comments.replies");
+     //   $post->load("comments.replies");
         return response()->json(['data'=>$post ]);
         } catch(Exception $e){
          
