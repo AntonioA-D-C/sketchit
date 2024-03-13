@@ -57,4 +57,10 @@ class User extends Authenticatable
     public function verification_codes(){
         return $this->hasMany(emailverificationcodes::class);
     }
+    public function followers(){
+        return  $this->hasMany(follow::class, 'followed_id', 'id');
+      }
+      public function followed(){
+        return  $this->hasMany(follow::class,'follower_id', 'id'  );
+      }
 }

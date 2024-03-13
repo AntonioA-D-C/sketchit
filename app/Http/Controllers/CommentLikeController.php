@@ -18,6 +18,8 @@ class CommentLikeController extends Controller
 
       if($like_exists){
           throw new Exception("You've already like this comment");
+      } else{
+         return response()->json(['message' => 'Comment not found'], 404);
       }
       try{
       $like = new Like();
@@ -39,7 +41,9 @@ class CommentLikeController extends Controller
          ->where('likeable_id', $comment->id)
          ->where('user_id', auth()->id())
          ->first();
- 
+         if(!$like){
+            return response()->json(['message' => 'Comment not found'], 404);
+         }
          $like->delete();
          return response()->json(["message"=>"Comment unliked successfully"]);
          

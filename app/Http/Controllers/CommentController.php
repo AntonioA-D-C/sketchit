@@ -17,8 +17,7 @@ class CommentController extends Controller
     {
         try{
             $comments = comment::all();
-            $comments->load('user');
-            $comments->load('replies.user');
+           
 
             return response()->json($comments);
               } catch(Exception $e){
