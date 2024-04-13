@@ -26,20 +26,24 @@ use App\Http\Controllers\UserController;
 
 
 Route::post("/register",  [AuthController::class, 'register']);
+Route::get("/posts",  [PostController::class, 'index']);
+Route::prefix('/post')->group(function () {
+    Route::get("/{post}/comments",  [PostCommentController::class, 'post_comments']);
+});
 
 Route::post("/login",  [AuthController::class, 'login']);
 Route::middleware('auth:api')->group(function () {
 
 
-    Route::get("/posts",  [PostController::class, 'index']);
+   
     Route::prefix('/post')->group(function () {
         Route::post("",  [PostController::class, 'create']);
         Route::get("/{post}",  [PostController::class, 'show']);
         Route::delete("/{post}",  [PostController::class, 'destroy']);
         Route::patch("/{post}",  [PostController::class, 'edit']);
-        Route::get("/{post}/comments",  [PostCommentController::class, 'post_comments']);
         Route::post("/{post}/like",  [PostLikeController::class, 'like']);
         Route::post("/{post}/unlike",  [PostLikeController::class, 'unlike']);
+        Route::get("/{post}/likes",  [PostLikeController::class, 'post_likes']);
         Route::post("/{post}/comment",  [PostCommentController::class, 'leave_comment']);
     });
     Route::get("/comments",  [CommentController::class, 'index']);

@@ -17,8 +17,9 @@ class PostController extends Controller
     public function index()
     {
         try{
-      $posts = post::all();
-  
+      $posts = post::withCount('likes')->withCount("comments")->get();
+      $posts->load('user');
+
       return response()->json($posts);
         } catch(Exception $e){
          

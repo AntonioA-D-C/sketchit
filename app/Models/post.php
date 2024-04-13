@@ -24,5 +24,6 @@ class post extends Model
     public function likes(): MorphMany{
         return $this->morphMany(Like::class, "likeable");
     }
+ 
     protected $table ="post";
 }

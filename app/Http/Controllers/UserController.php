@@ -50,7 +50,7 @@ class UserController extends Controller
     }
     public function follow(Request $request, User $user){
         try{
-            if(!$request->user()->id === $user->id){
+            if(!$request->user()->id == $user->id){
                 throw new Exception("An error occurred");
             }
             $follow = new follow();
@@ -67,7 +67,7 @@ class UserController extends Controller
     public function unfollow(Request $request, User $user){
         try{
             $this_user = $request->user();
-            if(!$this_user->id === $user->id){
+            if(!$this_user->id == $user->id){
                 throw new Exception("An error occurred");
             }
       
@@ -87,6 +87,8 @@ class UserController extends Controller
             foreach($followers as $follow_message){
                 $follower_list[] = User::find($follow_message->follower_id);
             }
+
+            
             return response()->json(['message'=>"User followers", "data"=>$follower_list]);
         } catch(Exception $e){
             throw new Exception($e);
