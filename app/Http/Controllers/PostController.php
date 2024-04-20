@@ -86,6 +86,7 @@ class PostController extends Controller
     public function show(post $post)
     {
         try{
+         $post->loadCount(['likes', 'comments']);
         $post->load("user");
      //   $post->load("comments.replies");
         return response()->json(['data'=>$post ]);

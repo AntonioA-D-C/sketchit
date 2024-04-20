@@ -19,7 +19,7 @@ class CommentLikeController extends Controller
       if($like_exists){
           throw new Exception("You've already like this comment");
       } else{
-         return response()->json(['message' => 'Comment not found'], 404);
+      //   return response()->json(['message' => 'Comment not found'], 404);
       }
       try{
       $like = new Like();
