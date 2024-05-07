@@ -16,9 +16,7 @@ class PostLikeController extends Controller
         try{
         
         $post_likes = like::where('likeable_type', get_class($post))->where('likeable_id', $post->id)->get();
-        if(count($post_likes)==0){
-            return response()->json(["message"=>"There's no one here"]);
-        }
+ 
         return response()->json(['message'=>"Successfully fetched likes", 'data'=>$post_likes]);  
         } catch(Exception $e){
            return $e;

@@ -17,14 +17,14 @@ class comment extends Model
     public function user(){
         return $this->belongsTo(User::class, 'user_ID', 'id');
     }
-    public function commentable(){
-        return $this->morphTo();
-    }
-    public function replies()
-    {
-        return $this->morphMany(Comment::class, 'commentable');
+ 
+    public function replies(){
+        return $this->hasMany(comment::class, 'parent_ID', 'id')->with("replies")->with("user")->with("likes");
     }
     public function likes(){
         return $this->morphMany(Like::class, "likeable");
+    }
+    public function replies_multilevel(){
+        return $this->hasMany(comment::class, 'parent_ID')->with('replies')->with('replies.likes')->with('replies.user');
     }
 }

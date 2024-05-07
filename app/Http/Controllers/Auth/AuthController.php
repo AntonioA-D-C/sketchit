@@ -81,6 +81,6 @@ class AuthController extends Controller
     
 
         $token = auth()->user()->createToken('api_token')->accessToken;
-        return Response::json(['user'=>auth()->user(), 'token'=>$token]);
+        return Response::json(['user'=>auth()->user(), 'token'=>$token])->cookie('auth_token', $token, 60, '/', null, true, true); // 60 minutes expiration, HTTP-only, Secure;
     }
 }
