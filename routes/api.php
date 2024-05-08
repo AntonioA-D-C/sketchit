@@ -28,6 +28,7 @@ use App\Http\Controllers\UserController;
 Route::post("/register",  [AuthController::class, 'register']);
 Route::get("/posts",  [PostController::class, 'index']);
 Route::prefix('/post')->group(function () {
+    Route::get("/{post}",  [PostController::class, 'show']);
     Route::get("/{post}/comments",  [PostCommentController::class, 'post_comments']);
 });
 
@@ -38,7 +39,7 @@ Route::middleware('auth:api')->group(function () {
    
     Route::prefix('/post')->group(function () {
         Route::post("",  [PostController::class, 'create']);
-        Route::get("/{post}",  [PostController::class, 'show']);
+     
         Route::delete("/{post}",  [PostController::class, 'destroy']);
         Route::patch("/{post}",  [PostController::class, 'edit']);
         Route::post("/{post}/like",  [PostLikeController::class, 'like']);
@@ -60,9 +61,11 @@ Route::middleware('auth:api')->group(function () {
         Route::post("/{comment}/reply",  [CommentReplyController::class, 'reply']);
         Route::get("/{comment}/replies",  [CommentReplyController::class, 'all_replies']);
     });
+    Route::get('user', [UserController::class, 'index']);
    Route::get('users', [UserController::class, 'index']);
     Route::prefix('/user')->group(function () {
         Route::get("/{user}",  [UserController::class, 'show']);
+        Route::get("/by/username/{user:user_name}",  [UserController::class, 'show']);
         Route::get("/{user}/posts",  [UserController::class, 'posts']);
         Route::get("/{user}/comments",  [UserController::class, 'comments']);
         Route::get("/{user}/follows",  [UserController::class, 'follows']);

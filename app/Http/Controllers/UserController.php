@@ -11,6 +11,19 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
+    
+    public function user(Request $request)
+    {
+        try{
+      $user = $request->user();
+  
+      return response()->json($user);
+        } catch(Exception $e){
+         
+            //   throw new Error("An error occurred");
+             return response()->json(["message"=>"An error occurred", "error"=>$e]);
+           }
+    }
     public function index()
     {
         try{
