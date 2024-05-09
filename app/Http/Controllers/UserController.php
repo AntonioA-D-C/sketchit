@@ -45,7 +45,7 @@ class UserController extends Controller
     }
     public function posts(User $user){
         try{
-            $user_posts = post::where('user_id', $user->id)->get();
+            $user_posts = post::where('user_id', $user->id)->with('user')->withCount('likes')->withCount("comments")->get();
             return response()->json(['message'=>"Successfully fetched user posts", "data"=>$user_posts]);
         } catch(Exception $e){
             throw new Exception($e);

@@ -32,6 +32,11 @@ Route::prefix('/post')->group(function () {
     Route::get("/{post}/comments",  [PostCommentController::class, 'post_comments']);
 });
 
+Route::prefix('/user')->group(function () {
+    Route::get("/{user}",  [UserController::class, 'show']);
+    Route::get("/by/username/{user:user_name}",  [UserController::class, 'show']);
+    Route::get("/{user}/posts",  [UserController::class, 'posts']);
+});
 Route::post("/login",  [AuthController::class, 'login']);
 Route::middleware('auth:api')->group(function () {
 
@@ -64,9 +69,8 @@ Route::middleware('auth:api')->group(function () {
     Route::get('user', [UserController::class, 'index']);
    Route::get('users', [UserController::class, 'index']);
     Route::prefix('/user')->group(function () {
-        Route::get("/{user}",  [UserController::class, 'show']);
-        Route::get("/by/username/{user:user_name}",  [UserController::class, 'show']);
-        Route::get("/{user}/posts",  [UserController::class, 'posts']);
+       
+     
         Route::get("/{user}/comments",  [UserController::class, 'comments']);
         Route::get("/{user}/follows",  [UserController::class, 'follows']);
         Route::get("/{user}/followers",  [UserController::class, 'followers']);
