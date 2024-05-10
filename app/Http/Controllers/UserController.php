@@ -92,32 +92,38 @@ class UserController extends Controller
             throw new Exception($e);
         }
     }
-    public function followers(User $user){
+    public function followers(User $user, Request $request){
         try{
-            $followers = follow::where('followed_id', $user->id)->get();
+            $followers = follow::where('followed_id', $user->id)->paginate(10);
          
+            /*
             $follower_list = [];
             foreach($followers as $follow_message){
                 $follower_list[] = User::find($follow_message->follower_id);
             }
-
-            
-            return response()->json(['message'=>"User followers", "data"=>$follower_list]);
+*/
+ $is_following = false;
+if(!!$request->user()){
+$is_following = $user->followers()->where('follower_id', $request->user()->id )->exists();
+}
+        
+            return response()->json(['message'=>"User followers", "data"=>$followers, "is_following"=>$is_following]);
         } catch(Exception $e){
             throw new Exception($e);
         }
     }
     public function follows(User $user){
         try{
-            $follows = follow::where('follower_id', $user->id)->get();
+            $follows = follow::where('follower_id', $user->id)->paginate(10);
            
-            foreach($follows as $follow_message){
+   /*         foreach($follows as $follow_message){
                 $follows_list[] = User::find($follow_message->followed_id);
             }
-            if(count($follows)==0){
-                return response()->json(['message'=>"This user doesn't follow anyone"]);  
-            }
-            return response()->json(['message'=>"Successfully fetched user comments", "data"=>$follows_list]);
+
+           
+ */
+
+            return response()->json(['message'=>"Successfully fetched user comments", "data"=>$follows]);
         } catch(Exception $e){
             throw new Exception($e);
         }

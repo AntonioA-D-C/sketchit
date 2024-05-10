@@ -15,4 +15,13 @@ class follow extends Model
     public function follower(){
         return $this->hasMany(User::class, 'id', 'follower_id');
     }
+    protected static function boot(){
+        parent::boot();
+
+        static::saving(function($follow){
+            if($follow->follower_id === $follow->followed_id){
+                throw new \Exception("Can't follow yourself");
+            }
+        });
+    }
 }

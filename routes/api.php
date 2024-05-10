@@ -36,6 +36,8 @@ Route::prefix('/user')->group(function () {
     Route::get("/{user}",  [UserController::class, 'show']);
     Route::get("/by/username/{user:user_name}",  [UserController::class, 'show']);
     Route::get("/{user}/posts",  [UserController::class, 'posts']);
+    Route::get("/{user}/follows",  [UserController::class, 'follows']);
+    Route::get("/{user}/followers",  [UserController::class, 'followers']);
 });
 Route::post("/login",  [AuthController::class, 'login']);
 Route::middleware('auth:api')->group(function () {
@@ -66,14 +68,13 @@ Route::middleware('auth:api')->group(function () {
         Route::post("/{comment}/reply",  [CommentReplyController::class, 'reply']);
         Route::get("/{comment}/replies",  [CommentReplyController::class, 'all_replies']);
     });
-    Route::get('user', [UserController::class, 'index']);
+    Route::get('user', [UserController::class, 'user']);
    Route::get('users', [UserController::class, 'index']);
     Route::prefix('/user')->group(function () {
        
      
         Route::get("/{user}/comments",  [UserController::class, 'comments']);
-        Route::get("/{user}/follows",  [UserController::class, 'follows']);
-        Route::get("/{user}/followers",  [UserController::class, 'followers']);
+      
         Route::post("/{user}/follow",  [UserController::class, 'follow']);
         Route::delete("/{user}/unfollow",  [UserController::class, 'unfollow']);
     });
