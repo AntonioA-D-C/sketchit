@@ -78,6 +78,8 @@ Route::middleware('auth:api')->group(function () {
         Route::delete("/{user}/unfollow",  [UserController::class, 'unfollow']);
         Route::get("/{user}/follows",  [UserController::class, 'follows']);
         Route::get("/{user}/followers",  [UserController::class, 'followers']);
+        Route::get("/{user}/common_follows",  [UserController::class, 'common_follows']);
+        
     });
 
 });

@@ -132,9 +132,26 @@ class UserController extends Controller
             }
 
            
- */
+ */ 
+
 
             return response()->json(['message' => "Successfully fetched user following", "data" => $follows]);
+        } catch (Exception $e) {
+            throw new Exception($e);
+        }
+    }
+
+    public function common_follows(User $user)
+    {
+        try {
+            $current_user_follows = follow::where('follower_id', auth()->user()->id)->pluck('followed_id');
+            $followed_follows = follow::where('followed_id', $user->id)->pluck('follower_id');
+
+            $common_users = User::whereIn('id', $current_user_follows)->whereIn('id', $followed_follows )->paginate(10);
+         
+          
+
+            return response()->json(['message' => "Successfully fetched user common followers", "data" => $common_users]);
         } catch (Exception $e) {
             throw new Exception($e);
         }
