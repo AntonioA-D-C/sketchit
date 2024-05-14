@@ -14,15 +14,28 @@ class PostController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+       
         try {
-            $posts = post::withCount('likes')->withCount("comments")->get();
+            $posts = post::query();
+            $query = $request->input('query');
+            if($request->has("query")){
+               
+                $posts->where('title', 'like', '%' . $query . '%') ->orWhere('body_text', 'like', '%' . $query . '%');;
+              
+                $posts->orderByRaw("CASE WHEN title LIKE '%$query%' THEN 1 WHEN body_text LIKE '%$query%' THEN 2 ELSE 3 END");
+            }  
+
+          $posts = $posts->paginate(100);
+         //   $posts = post::withCount('likes')->withCount("comments")->get();
+            $posts->loadCount('likes');
+            $posts->loadCount('comments');
             $posts->load('user');
 
             return response()->json($posts);
         } catch (Exception $e) {
-
+            return $e;
             //   throw new Error("An error occurred");
             return response()->json(["message" => "An error occurred", "error" => $e]);
         }
