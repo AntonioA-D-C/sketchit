@@ -8,6 +8,7 @@ use App\Models\post;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Spatie\Tags\Tag;
 
 class PostController extends Controller
 {
@@ -52,6 +53,7 @@ class PostController extends Controller
                 'title' => 'string|max:300|required',
                 'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
                 'body_text' => 'nullable|string|max:1000',
+                'tagList'=>'array'
             ]);
             $post = new post();
             $post->title = $request->title;
@@ -76,6 +78,11 @@ class PostController extends Controller
 
             $post->save();
             $post->load('user');
+
+            $tags = collect($request['tagList'])->map(function($tag){
+                return Tag::findOrCreate($tag);
+            });
+            $post->attachTags($tags);
             return response()->json(["message" => "Post successfully submitted", 'data' => $post]);
         } catch (Exception $e) {
 

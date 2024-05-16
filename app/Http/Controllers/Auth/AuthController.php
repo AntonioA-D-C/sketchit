@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use App\Models\emailverificationcodes;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Validator;
@@ -14,8 +15,12 @@ class AuthController extends Controller
 {
     public function logout(Request $request)
     { 
-       $request->user()->tokens()->delete();
-       
+   if (Auth::check()) {
+    $accessToken = Auth::user()->token();
+    if ($accessToken) {
+        $accessToken->revoke();
+    }
+    }
         return response()->json([
             'message' => "You've successfully logged out"
         ]);
