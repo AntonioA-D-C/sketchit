@@ -23,18 +23,65 @@ class PostController extends Controller
             $query = $request->input('query');
             if($request->has("query")){
                
-                $posts->where('title', 'like', '%' . $query . '%') ->orWhere('body_text', 'like', '%' . $query . '%');;
+                $posts->whereHas('tags', function ($post_tags) use ($query) {
+                    $post_tags->where('name', 'like', "%$query%")
+                          ->orWhere('slug', 'like', "%$query%"); // Add any additional columns you want to search
+                })->orWhere('title', 'like', '%' . $query . '%') ->orWhere('body_text', 'like', '%' . $query . '%');
               
                 $posts->orderByRaw("CASE WHEN title LIKE '%$query%' THEN 1 WHEN body_text LIKE '%$query%' THEN 2 ELSE 3 END");
             }  
 
           $posts = $posts->paginate(100);
+          $posts->load("tags");
+
+          $tags =  $posts->pluck("tags")->flatten(1);
+
+          $nonEmptyTags = $tags->filter(function ($tag) {
+            return !empty($tag['id']); // Assuming id is the key to check if the tag is non-empty
+        });
+        
+           $tagCounts = $nonEmptyTags->countBy(function($tag){
+            return $tag["id"];
+          });
+
+          $tagDetails = [];
+          foreach($tags as $tag){
+            $tagName= $tag["name"];
+            $tagSlug= $tag["slug"];
+            $tagId= $tag["id"];
+            $tagCount = $tagCounts[$tagId] ?? 0;
+         
+            $existingTag = array_filter($tagDetails, function($tag) use ($tagId){
+       
+                return $tag["id"] === $tagId;
+            });
+       
+            if($existingTag){
+               continue;
+            } else {
+                $tagDetails[]=[
+                    'id'=>$tagId,
+                    'name'=>$tagName,
+                    'slug'=>$tagSlug,
+                    'count'=>$tagCount
+                ];
+            }
+      
+          }
+        
+        
+          usort($tagDetails, function($a, $b){
+            return $b["count"]-$a["count"];
+          });
+
+    
          //   $posts = post::withCount('likes')->withCount("comments")->get();
+         
             $posts->loadCount('likes');
             $posts->loadCount('comments');
             $posts->load('user');
 
-            return response()->json($posts);
+            return response()->json(['data'=>$posts, 'tags'=>$tagDetails]);
         } catch (Exception $e) {
             return $e;
             //   throw new Error("An error occurred");
