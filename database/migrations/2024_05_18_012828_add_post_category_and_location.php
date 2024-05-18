@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
        Schema::table('post', function(Blueprint $table){
-        $table->string("country");
-        $table->string("city");
-        $table->foreign("category")->references('id')->on("categories");
+        $table->string("country")->nullable();
+        $table->string("city")->nullable();
+        $table->json('coordinates')->nullable();
        });
     }
 
