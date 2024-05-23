@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use Error;
 use Exception;
 use App\Models\post;
+use App\Models\User;
 use App\Models\comment;
 use Illuminate\Http\Request;
+use App\Notifications\NewReply;
 
 class CommentReplyController extends Controller
 {
@@ -26,6 +28,9 @@ class CommentReplyController extends Controller
             $new_comment->post_ID = $comment->post_ID;
             $new_comment->parent_ID = $comment->id;
             $new_comment->save();
+
+            $userToNotify = $comment->user;
+           return $userToNotify->notify(new NewReply($comment->id, $new_comment->id));
             $new_comment->load('user');
  
             
