@@ -17,71 +17,81 @@ class PostController extends Controller
      */
     public function index(Request $request)
     {
-       
+
         try {
             $posts = post::query();
             $query = $request->input('query');
-            if($request->has("query")){
-               
+            $tags = $request->input('tags');
+            if ($request->has("query")) {
+
                 $posts->whereHas('tags', function ($post_tags) use ($query) {
                     $post_tags->where('name', 'like', "%$query%")
-                          ->orWhere('slug', 'like', "%$query%"); // Add any additional columns you want to search
-                })->orWhere('title', 'like', '%' . $query . '%') ->orWhere('body_text', 'like', '%' . $query . '%');
-              
+                        ->orWhere('slug', 'like', "%$query%"); // Add any additional columns you want to search
+                })->orWhere('title', 'like', '%' . $query . '%')->orWhere('body_text', 'like', '%' . $query . '%');
+
                 $posts->orderByRaw("CASE WHEN title LIKE '%$query%' THEN 1 WHEN body_text LIKE '%$query%' THEN 2 ELSE 3 END");
-            }  
-
-          $posts = $posts->paginate(100);
-          $posts->load("tags");
-
-          $tags =  $posts->pluck("tags")->flatten(1);
-
-          $nonEmptyTags = $tags->filter(function ($tag) {
-            return !empty($tag['id']); // Assuming id is the key to check if the tag is non-empty
-        });
-        
-           $tagCounts = $nonEmptyTags->countBy(function($tag){
-            return $tag["id"];
-          });
-
-          $tagDetails = [];
-          foreach($tags as $tag){
-            $tagName= $tag["name"];
-            $tagSlug= $tag["slug"];
-            $tagId= $tag["id"];
-            $tagCount = $tagCounts[$tagId] ?? 0;
-         
-            $existingTag = array_filter($tagDetails, function($tag) use ($tagId){
-       
-                return $tag["id"] === $tagId;
-            });
-       
-            if($existingTag){
-               continue;
-            } else {
-                $tagDetails[]=[
-                    'id'=>$tagId,
-                    'name'=>$tagName,
-                    'slug'=>$tagSlug,
-                    'count'=>$tagCount
-                ];
             }
-      
-          }
-        
-        
-          usort($tagDetails, function($a, $b){
-            return $b["count"]-$a["count"];
-          });
+            
+            if ($request->has("tags")) {
 
-    
-         //   $posts = post::withCount('likes')->withCount("comments")->get();
-         
+                $posts->whereHas('tags', function ($post_tags) use ($tags) {
+                   $post_tags->whereIn('id', $tags);
+                });
+             
+            }
+
+            $posts = $posts->paginate(100);
+            
+            $posts->load("tags");
+
+            $tags =  $posts->pluck("tags")->flatten(1);
+
+            $nonEmptyTags = $tags->filter(function ($tag) {
+                return !empty($tag['id']); // Assuming id is the key to check if the tag is non-empty
+            });
+
+            $tagCounts = $nonEmptyTags->countBy(function ($tag) {
+                return $tag["id"];
+            });
+
+            $tagDetails = [];
+            foreach ($tags as $tag) {
+                $tagName = $tag["name"];
+                $tagSlug = $tag["slug"];
+                $tagId = $tag["id"];
+                $tagCount = $tagCounts[$tagId] ?? 0;
+
+                $existingTag = array_filter($tagDetails, function ($tag) use ($tagId) {
+
+                    return $tag["id"] === $tagId;
+                });
+
+                if ($existingTag) {
+                    continue;
+                } else {
+                    $tagDetails[] = [
+                        'id' => $tagId,
+                        'name' => $tagName,
+                        'slug' => $tagSlug,
+                        'count' => $tagCount
+                    ];
+                }
+            }
+
+
+            usort($tagDetails, function ($a, $b) {
+                return $b["count"] - $a["count"];
+            });
+
+            $firstFiveTags = array_slice($tagDetails, 0, 5);
+
+            //   $posts = post::withCount('likes')->withCount("comments")->get();
+
             $posts->loadCount('likes');
             $posts->loadCount('comments');
             $posts->load('user');
 
-            return response()->json(['data'=>$posts, 'tags'=>$tagDetails]);
+            return response()->json(['data' => $posts, 'tags' => $firstFiveTags]);
         } catch (Exception $e) {
             return $e;
             //   throw new Error("An error occurred");
@@ -100,7 +110,7 @@ class PostController extends Controller
                 'title' => 'string|max:300|required',
                 'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
                 'body_text' => 'nullable|string|max:1000',
-                'tagList'=>'array'
+                'tagList' => 'array'
             ]);
             $post = new post();
             $post->title = $request->title;
@@ -126,7 +136,7 @@ class PostController extends Controller
             $post->save();
             $post->load('user');
 
-            $tags = collect($request['tagList'])->map(function($tag){
+            $tags = collect($request['tagList'])->map(function ($tag) {
                 return Tag::findOrCreate($tag);
             });
             $post->attachTags($tags);

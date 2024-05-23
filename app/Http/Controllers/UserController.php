@@ -17,6 +17,7 @@ class UserController extends Controller
     {
         try {
             $user = $request->user();
+            
 
             return response()->json($user);
         } catch (Exception $e) {
@@ -25,11 +26,20 @@ class UserController extends Controller
             return response()->json(["message" => "An error occurred", "error" => $e]);
         }
     }
-    public function index()
+    public function index(Request $request)
     {
         try {
-            $users = User::all();
+            $query = $request->input('query');
 
+            $users = User::query();
+
+            if($request->has("query")){
+               
+                $users->where('user_name', 'like', '%' . $query . '%')->orWhere('name', 'like', "%$query%")->orWhere('last_name', 'like', '%' . $query . '%');
+              
+                $users->orderByRaw("CASE WHEN user_name LIKE '%$query%' THEN 1 WHEN name LIKE '%$query%' THEN 2 ELSE 3 END");
+            }  
+           $users= $users->paginate(100);
             return response()->json(['message' => "Fetching all users", "data" => $users]);
         } catch (Exception $e) {
 

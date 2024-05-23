@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\CommentLikeController;
 use App\Http\Controllers\CommentReplyController;
@@ -38,6 +39,8 @@ Route::prefix('/user')->group(function () {
     Route::get("/{user}/posts",  [UserController::class, 'posts']);
 
 });
+
+Route::get("/categories",  [CategoryController::class, 'index']);
 Route::post("/login",  [AuthController::class, 'login']);
 Route::post("/logout",  [AuthController::class, 'logout']);
 Route::middleware('auth:api')->group(function () {

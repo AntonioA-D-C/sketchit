@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use App\Models\category;
 use Illuminate\Http\Request;
 
@@ -12,7 +13,16 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        //
+        try{
+            $categories = category::all();
+           
+
+            return response()->json(['message'=>"Successfully fetched all categories", "data"=>$categories]);
+              } catch(Exception $e){
+               
+                  //   throw new Error("An error occurred");
+                   return response()->json(["message"=>"An error occurred", "error"=>$e]);
+                 }
     }
 
     /**
