@@ -35,7 +35,7 @@ class UserController extends Controller
 
             if($request->has("query")){
                
-                $users->where('user_name', 'like', '%' . $query . '%')->orWhere('name', 'like', "%$query%")->orWhere('last_name', 'like', '%' . $query . '%');
+                $users->where('user_name', 'like', '%' . $query . '%')->orWhere('name', 'like', "%$query%");
               
                 $users->orderByRaw("CASE WHEN user_name LIKE '%$query%' THEN 1 WHEN name LIKE '%$query%' THEN 2 ELSE 3 END");
             }  

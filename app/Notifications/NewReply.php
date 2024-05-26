@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Models\comment;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -12,15 +13,27 @@ class NewReply extends Notification
     use Queueable;
 
     protected $commentId;
-    protected $replyId;
+    protected $reply;
+    protected $postTitle;
+    protected $user;
+    protected $content;
     /**
      * Create a new notification instance.
      */
-    public function __construct($commentId, $replyId)
+    public function __construct($commentId, $reply, $postTitle)
     {
         $this->commentId = $commentId;
-        $this->replyId = $replyId;
+        $this->reply = $reply;
+        $this->postTitle = $postTitle;
+
+        $this->user = comment::find($this->reply->id)->user;
+     $this->content = substr($this->reply->content, 0, 90);
+     if(strlen($this->reply->content)>90){
+        $this->content = $this->content."...";
+     }
+
     }
+    
 
     /**
      * Get the notification's delivery channels.
@@ -52,7 +65,10 @@ class NewReply extends Notification
     {
         return [
           'comment_id'=>$this->commentId,
-          'reply_id'=>$this->replyId,
+          'reply_id'=>$this->reply->id,
+          'user'=>['name'=>$this->user->name, 'user_name'=>$this->user->user_name],
+          'message'=> $this->user->name." has responded to your comment in ".$this->postTitle,
+          'content'=>$this->content
         ];
     }
 }

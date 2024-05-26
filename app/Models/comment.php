@@ -12,7 +12,7 @@ class comment extends Model
 
     protected $guarded =[];
     public function get_post(){
-        return $this->hasOne(post::class);
+        return $this->belongsTo(post::class, 'post_ID', 'id');
     }
     public function user(){
         return $this->belongsTo(User::class, 'user_ID', 'id');

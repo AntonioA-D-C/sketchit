@@ -9,6 +9,7 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\CommentLikeController;
 use App\Http\Controllers\CommentReplyController;
 use App\Http\Controllers\LikeController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PostCommentController;
 use App\Http\Controllers\PostLikeController;
 use App\Http\Controllers\UserController;
@@ -72,6 +73,7 @@ Route::middleware('auth:api')->group(function () {
         Route::get("/{comment}/replies",  [CommentReplyController::class, 'all_replies']);
     });
     Route::get('user', [UserController::class, 'user']);
+    Route::get('notifications', [NotificationController::class, 'index']);
    Route::get('users', [UserController::class, 'index']);
     Route::prefix('/user')->group(function () {
        

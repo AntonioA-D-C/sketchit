@@ -30,7 +30,10 @@ class CommentReplyController extends Controller
             $new_comment->save();
 
             $userToNotify = $comment->user;
-           return $userToNotify->notify(new NewReply($comment->id, $new_comment->id));
+
+            $current_post = $new_comment->get_post;
+          
+        $userToNotify->notify(new NewReply($comment->id, $new_comment, $current_post->title));
             $new_comment->load('user');
  
             

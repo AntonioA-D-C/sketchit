@@ -2,17 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\notification;
+ 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class NotificationController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $user = Auth::user();
+        $notifications = $user->notifications()->paginate(10);
+        $total_unread = $user->unreadNotifications->count();
+        return response()->json(['data'=>$notifications, 'total_unread'=>$total_unread]);
+
     }
 
     /**

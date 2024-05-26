@@ -51,9 +51,10 @@ class User extends Authenticatable
     public function comments(){
         return $this->hasMany(comment::class);
     }
+    /*
     public function notifications(){
         return $this->hasMany(notification::class);
-    }
+    }*/
     public function verification_codes(){
         return $this->hasMany(emailverificationcodes::class);
     }
