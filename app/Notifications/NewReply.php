@@ -7,6 +7,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\Auth;
 
 class NewReply extends Notification
 {
@@ -42,6 +43,7 @@ class NewReply extends Notification
      */
     public function via(object $notifiable): array
     {
+        
         return ['database'];
     }
 
@@ -61,14 +63,17 @@ class NewReply extends Notification
      *
      * @return array<string, mixed>
      */
-    public function toArray(object $notifiable): array
+    public function toDatabase($notifiable)
     {
+       
+   
+       
         return [
+      
           'comment_id'=>$this->commentId,
           'reply_id'=>$this->reply->id,
-          'user'=>['name'=>$this->user->name, 'user_name'=>$this->user->user_name],
-          'message'=> $this->user->name." has responded to your comment in ".$this->postTitle,
-          'content'=>$this->content
+          'message'=>$this->user->name." has responded to your comment in ".$this->postTitle
         ];
+  
     }
 }

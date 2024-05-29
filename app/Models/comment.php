@@ -19,7 +19,8 @@ class comment extends Model
     }
  
     public function replies(){
-        return $this->hasMany(comment::class, 'parent_ID', 'id')->with("replies")->with("user")->with("likes");
+    //    return $this->hasMany(comment::class, 'parent_ID', 'id')->with("replies")->where("depth","<",4)->with("user")->with("likes");
+    return $this->hasMany(comment::class, 'parent_ID', 'id')->with("user")->with("likes");
     }
     public function likes(){
         return $this->morphMany(Like::class, "likeable");

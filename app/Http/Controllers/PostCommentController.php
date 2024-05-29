@@ -10,13 +10,31 @@ use Illuminate\Http\Request;
 
 class PostCommentController extends Controller
 {
-  function post_comments(post $post){
+  function post_comments(post $post, Request $request){
     try{
     
-    $post_comments = comment::where('post_ID', $post->id)->whereNull('parent_ID')->with('likes')->with('user')->with("replies")->get();
- 
- 
-    if(count($post_comments)==0){
+  //  $post_comments = comment::where('post_ID', $post->id)->whereNull('parent_ID')->with('likes')->with('user')->with("replies")->get();
+
+  $maxDepth = $request->input("depth");
+
+$repliesString = "replies";
+
+
+
+if(!!$maxDepth && $maxDepth > 0){
+  for($i=1; $i<$maxDepth; $i++){
+
+    $repliesString = $repliesString.".replies";
+    }
+  $post_comments = comment::where('post_ID', $post->id)->whereNull('parent_ID')->with('likes')->with('user')->with([$repliesString => function($query) use ($maxDepth){
+   
+    $query->where("depth", '<', $maxDepth+1)->withCount("replies")->get();
+  }
+  ])->get();
+}  else{
+  $post_comments = comment::where('post_ID', $post->id)->whereNull('parent_ID')->with('likes')->with('user')->get();
+}
+  if(count($post_comments)==0){
         return response()->json(["message"=>"There's no one here"]);
     }
     return response()->json($post_comments);  

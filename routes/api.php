@@ -41,6 +41,11 @@ Route::prefix('/user')->group(function () {
 
 });
 
+Route::prefix('/comment')->group(function () {
+
+    Route::get("/{comment}",  [CommentController::class, 'show']);
+});
+
 Route::get("/categories",  [CategoryController::class, 'index']);
 Route::post("/login",  [AuthController::class, 'login']);
 Route::post("/logout",  [AuthController::class, 'logout']);
@@ -61,7 +66,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get("/comments",  [CommentController::class, 'index']);
     Route::prefix('/comment')->group(function () {
 
-        Route::get("/{comment}",  [CommentController::class, 'show']);
+      //  Route::get("/{comment}",  [CommentController::class, 'show']);
 
 
         Route::delete("/{comment}",  [CommentController::class, 'destroy']);
@@ -73,8 +78,14 @@ Route::middleware('auth:api')->group(function () {
         Route::get("/{comment}/replies",  [CommentReplyController::class, 'all_replies']);
     });
     Route::get('user', [UserController::class, 'user']);
+
     Route::get('notifications', [NotificationController::class, 'index']);
-   Route::get('users', [UserController::class, 'index']);
+    
+    Route::post('mark_all_notifications_as_read', [NotificationController::class, 'mark_all_as_read']);
+    
+    Route::post('mark_notification_as_read/{notification}', [NotificationController::class, 'mark_as_read']);
+   
+    Route::get('users', [UserController::class, 'index']);
     Route::prefix('/user')->group(function () {
        
      
