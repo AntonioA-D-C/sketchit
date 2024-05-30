@@ -54,7 +54,7 @@ class CommentReplyController extends Controller
         try {
 
 
-            $comment_replies = comment::where('parent_ID', $comment->id)->paginate(1);
+            $comment_replies = comment::where('parent_ID', $comment->id)->paginate(10);
             $comment_replies->load('user');
             $comment_replies->load('likes');
             $comment_replies->loadCount('replies');
