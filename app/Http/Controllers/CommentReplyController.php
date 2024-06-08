@@ -18,7 +18,7 @@ class CommentReplyController extends Controller
 
             $request->validate([
 
-                'content' => 'string|max:255'
+                'content' => 'string|max:500'
 
             ]);
             $new_comment = new comment();
@@ -49,15 +49,30 @@ class CommentReplyController extends Controller
             return response()->json(["message" => "An error occurred", "error" => $e]);
         }
     }
-    public function all_replies(comment $comment)
+    public function all_replies(Request $request, comment $comment)
     {
         try {
 
+            $maxDepth =$request->input("depth");
+            
+            $repliesString = "replies";
+            $initialDepth= $comment->depth;
+            if(!!$maxDepth && $maxDepth > 0){
+                for($i=1; $i<$maxDepth-1; $i++){
+                 
+                    $repliesString = $repliesString.".replies";
+                    }
+            
+            $comment_replies=  comment::where('parent_ID', $comment->id)->with('likes')->with('user')->with([
+                $repliesString => function ($query) use ($maxDepth, $initialDepth) {
 
-            $comment_replies = comment::where('parent_ID', $comment->id)->paginate(10);
-            $comment_replies->load('user');
-            $comment_replies->load('likes');
-            $comment_replies->loadCount('replies');
+                    $query->whereraw("'depth' <  ($maxDepth+$initialDepth)+1")->withCount("replies")->get();
+                }
+            ]);
+            } else{
+         $comment_replies =  comment::where('parent_ID', $comment->id)->with('likes')->with('user')->withCount("replies");
+            }
+            $comment_replies = $comment_replies->paginate(10);
             return response()->json($comment_replies);
         } catch (Exception $e) {
 

@@ -6,6 +6,7 @@ use Error;
 use Exception;
 use App\Models\post;
 use App\Models\comment;
+use App\Notifications\PostReply;
 use Illuminate\Http\Request;
 
 class PostCommentController extends Controller
@@ -48,7 +49,7 @@ function leave_comment(Request $request, post $post ){
 
       $request->validate([
          
-       'content'=>'string|max:255'  
+       'content'=>'string|max:500'  
           
       ]);
       $comment = new comment();
@@ -60,6 +61,11 @@ function leave_comment(Request $request, post $post ){
       $comment->save();
       $comment->load('user');
        
+      $userToNotify = $post->user;
+
+      if ($userToNotify->id !== auth()->id()) {
+        $userToNotify->notify(new PostReply($comment->id, $post));
+    }
       return response()->json(["message"=>"comment successfully submitted", 'data'=>$comment ]);
   } catch(Exception $e){
   

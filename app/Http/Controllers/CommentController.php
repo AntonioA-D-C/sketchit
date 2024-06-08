@@ -71,7 +71,7 @@ class CommentController extends Controller
          
         try{
         $comment->load("user");
-        $comment->load('replies.user');
+      
         $comment->load("likes");
         return response()->json(['data'=>$comment ]);
         } catch(Exception $e){

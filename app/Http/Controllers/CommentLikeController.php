@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Like;
 use App\Models\comment;
+use App\Notifications\CommentLike;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -29,6 +30,12 @@ class CommentLikeController extends Controller
   
 
       $like->save();
+
+      $userToNotify = $comment->user;
+
+      if ($userToNotify->id !== auth()->id()) {
+        $userToNotify->notify(new CommentLike($comment->id, $comment->get_post));
+    }
       return response()->json(["message"=>"comment liked successfully"]);
       } catch(Exception $e){
       throw new Exception("Something went wrong");
