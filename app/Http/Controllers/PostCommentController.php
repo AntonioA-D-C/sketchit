@@ -27,13 +27,13 @@ if(!!$maxDepth && $maxDepth > 0){
 
     $repliesString = $repliesString.".replies";
     }
-  $post_comments = comment::where('post_ID', $post->id)->whereNull('parent_ID')->with('likes')->with('user')->with([$repliesString => function($query) use ($maxDepth){
+  $post_comments = comment::withTrashed()->where('post_ID', $post->id)->whereNull('parent_ID')->with('likes')->with('user')->with([$repliesString => function($query) use ($maxDepth){
    
     $query->where("depth", '<', $maxDepth+1)->withCount("replies")->get();
   }
   ])->get();
 }  else{
-  $post_comments = comment::where('post_ID', $post->id)->whereNull('parent_ID')->with('likes')->with('user')->get();
+  $post_comments = comment::withTrashed()->where('post_ID', $post->id)->whereNull('parent_ID')->with('likes')->with('user')->get();
 }
   if(count($post_comments)==0){
         return response()->json(["message"=>"There's no one here"]);

@@ -7,6 +7,7 @@ use Exception;
 use App\Models\comment;
 use App\Models\post;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CommentController extends Controller
 {
@@ -15,16 +16,16 @@ class CommentController extends Controller
      */
     public function index()
     {
-        try{
+        try {
             $comments = comment::all();
-           
+
 
             return response()->json($comments);
-              } catch(Exception $e){
-               
-                  //   throw new Error("An error occurred");
-                   return response()->json(["message"=>"An error occurred", "error"=>$e]);
-                 }
+        } catch (Exception $e) {
+
+            //   throw new Error("An error occurred");
+            return response()->json(["message" => "An error occurred", "error" => $e]);
+        }
     }
 
     /**
@@ -32,53 +33,53 @@ class CommentController extends Controller
      */
     public function create(Request $request)
     {
-    
-        try{
+
+        try {
 
             $request->validate([
-               
-             'content'=>'string|max:255'  
-                
+
+                'content' => 'string|max:255'
+
             ]);
             $comment = new comment();
             $post = comment::find(1);
-         
+
             $comment->content = $request->content;
             $comment->user_ID = $request->user()->id;
             $comment->commentable()->associate($post);
             $comment->save();
             $comment->load('user');
             $comment->load('replies');
-            
-            return response()->json(["message"=>"comment successfully submitted", 'data'=>$comment ]);
-        } catch(Exception $e){
-        
-          throw new Error($e);
-          return response()->json(["message"=>"An error occurred", "error"=>$e]);
+
+            return response()->json(["message" => "comment successfully submitted", 'data' => $comment]);
+        } catch (Exception $e) {
+
+            throw new Error($e);
+            return response()->json(["message" => "An error occurred", "error" => $e]);
         }
     }
 
     /**
      * Store a newly created resource in storage.
      */
- 
+
 
     /**
      * Display the specified resource.
      */
     public function show(comment $comment)
     {
-         
-        try{
-        $comment->load("user");
-      
-        $comment->load("likes");
-        return response()->json(['data'=>$comment ]);
-        } catch(Exception $e){
-         
+
+        try {
+            $comment->load("user");
+
+            $comment->load("likes");
+            return response()->json(['data' => $comment]);
+        } catch (Exception $e) {
+
             //   throw new Error("An error occurred");
-             return response()->json(["message"=>"An error occurred. It's possible this comment was deleted by the person who commented it", "error"=>$e]);
-           }
+            return response()->json(["message" => "An error occurred. It's possible this comment was deleted by the person who commented it", "error" => $e]);
+        }
     }
 
     /**
@@ -102,14 +103,20 @@ class CommentController extends Controller
      */
     public function destroy(comment $comment)
     {
-        try{
-            $comment->delete();
-            return response()->json(['message'=>"Successfully deleted comment", 'data'=>$comment ]);
-            } catch(Exception $e){
-             
-                //   throw new Error("An error occurred");
-                 return response()->json(["message"=>"An error occurred. It's possible this comment was deleted by the person who commented it", "error"=>$e]);
-               }
-    
+        try {
+
+            if ($comment->user_ID !== Auth::id()) {
+                return response()->json(['message' => 'Unauthorized to delete this comment.'], 403);
+            }
+
+            if ($comment) {
+                $comment->delete();
+                return response()->json(['message' => 'Comment deleted successfully.']);
+            }
+        } catch (Exception $e) {
+
+            //   throw new Error("An error occurred");
+            return response()->json(["message" => "An error occurred. It's possible this comment was deleted by the person who commented it", "error" => $e]);
+        }
     }
 }

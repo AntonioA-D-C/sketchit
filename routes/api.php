@@ -44,6 +44,7 @@ Route::prefix('/user')->group(function () {
 Route::prefix('/comment')->group(function () {
 
     Route::get("/{comment}",  [CommentController::class, 'show']);
+    Route::get("/{comment}/replies",  [CommentReplyController::class, 'all_replies']);
 });
 
 Route::get("/categories",  [CategoryController::class, 'index']);
@@ -71,11 +72,12 @@ Route::middleware('auth:api')->group(function () {
 
         Route::delete("/{comment}",  [CommentController::class, 'destroy']);
         Route::patch("/{comment}",  [CommentController::class, 'edit']);
+        
 
         Route::post("/{comment}/like",  [CommentLikeController::class, 'like']);
         Route::post("/{comment}/unlike",  [CommentLikeController::class, 'unlike']);
         Route::post("/{comment}/reply",  [CommentReplyController::class, 'reply']);
-        Route::get("/{comment}/replies",  [CommentReplyController::class, 'all_replies']);
+
     });
     Route::get('user', [UserController::class, 'user']);
 
