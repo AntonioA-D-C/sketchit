@@ -1,6 +1,11 @@
-📌 Social API
+📌 Sketchit API
 
 A RESTful API built with Laravel for managing users, posts, comments, likes, follows, and notifications.
+
+Sketchit was a social platform built for sharing urban sketching artwork — a space where artists could post, discover, and engage with city-inspired drawings from around the world.
+
+The application focused on simplicity, community interaction, and visual storytelling.
+
 
 Base URL
 /api
