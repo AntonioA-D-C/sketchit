@@ -1,233 +1,281 @@
-📌 Sketchit API
+# 📌 Sketchit API
 
 A RESTful API built with Laravel for managing users, posts, comments, likes, follows, and notifications.
 
-Sketchit was a social platform built for sharing urban sketching artwork — a space where artists could post, discover, and engage with city-inspired drawings from around the world.
+**Sketchit** was a social platform built for sharing urban sketching artwork — a space where artists could post, discover, and engage with city-inspired drawings from around the world.
 
 The application focused on simplicity, community interaction, and visual storytelling.
 
+---
 
-Base URL
-/api
-Authentication
+## 🌐 Base URL
 
-This API uses token-based authentication via auth:api.
+`/api`
+
+---
+
+## 🔐 Authentication
+
+This API uses token-based authentication via `auth:api`.
 
 For protected routes, include:
 
+```
 Authorization: Bearer YOUR_TOKEN_HERE
 Accept: application/json
-🔐 Authentication
-Register
+```
 
-POST /register
+---
+
+# 🔑 Authentication Endpoints
+
+## Register
+
+`POST /api/register`
 
 Create a new user account.
 
-Body
+### Body
+
+```json
 {
   "name": "John Doe",
   "email": "john@email.com",
   "password": "password",
   "password_confirmation": "password"
 }
-Login
+```
 
-POST /login
+---
 
-Body
+## Login
+
+`POST /api/login`
+
+### Body
+
+```json
 {
   "email": "john@email.com",
   "password": "password"
 }
+```
 
 Returns authentication token.
 
-Logout
+---
 
-POST /logout
+## Logout
+
+`POST /api/logout`  
 🔒 Requires Authentication
 
-📝 Posts
-Get All Posts
+---
 
-GET /posts
+# 📝 Posts
 
-Get Single Post
+## Get All Posts
 
-GET /post/{post}
+`GET /api/posts`
 
-Get Post Comments
+## Get Single Post
 
-GET /post/{post}/comments
+`GET /api/post/{post}`
 
-Create Post
+## Get Post Comments
 
-POST /post
+`GET /api/post/{post}/comments`
+
+## Create Post
+
+`POST /api/post`  
 🔒 Requires Authentication
 
-Body
+### Body
+
+```json
 {
   "title": "Post title",
   "body": "Post content"
 }
-Edit Post
+```
 
-PATCH /post/{post}
+## Edit Post
+
+`PATCH /api/post/{post}`  
 🔒 Requires Authentication
 
-Delete Post
+## Delete Post
 
-DELETE /post/{post}
+`DELETE /api/post/{post}`  
 🔒 Requires Authentication
 
-Like Post
+## Like Post
 
-POST /post/{post}/like
+`POST /api/post/{post}/like`  
 🔒 Requires Authentication
 
-Unlike Post
+## Unlike Post
 
-POST /post/{post}/unlike
+`POST /api/post/{post}/unlike`  
 🔒 Requires Authentication
 
-Get Post Likes
+## Get Post Likes
 
-GET /post/{post}/likes
+`GET /api/post/{post}/likes`  
 🔒 Requires Authentication
 
-Leave Comment on Post
+## Leave Comment on Post
 
-POST /post/{post}/comment
+`POST /api/post/{post}/comment`  
 🔒 Requires Authentication
 
-Body
+### Body
+
+```json
 {
   "body": "Nice post!"
 }
-💬 Comments
-Get All Comments
+```
 
-GET /comments
+---
+
+# 💬 Comments
+
+## Get All Comments
+
+`GET /api/comments`  
 🔒 Requires Authentication
 
-Get Single Comment
+## Get Single Comment
 
-GET /comment/{comment}
+`GET /api/comment/{comment}`
 
-Get Comment Replies
+## Get Comment Replies
 
-GET /comment/{comment}/replies
+`GET /api/comment/{comment}/replies`
 
-Edit Comment
+## Edit Comment
 
-PATCH /comment/{comment}
+`PATCH /api/comment/{comment}`  
 🔒 Requires Authentication
 
-Delete Comment
+## Delete Comment
 
-DELETE /comment/{comment}
+`DELETE /api/comment/{comment}`  
 🔒 Requires Authentication
 
-Like Comment
+## Like Comment
 
-POST /comment/{comment}/like
+`POST /api/comment/{comment}/like`  
 🔒 Requires Authentication
 
-Unlike Comment
+## Unlike Comment
 
-POST /comment/{comment}/unlike
+`POST /api/comment/{comment}/unlike`  
 🔒 Requires Authentication
 
-Reply to Comment
+## Reply to Comment
 
-POST /comment/{comment}/reply
+`POST /api/comment/{comment}/reply`  
 🔒 Requires Authentication
 
-Body
+### Body
+
+```json
 {
   "body": "Reply text"
 }
-👤 Users
-Get Authenticated User
+```
 
-GET /user
+---
+
+# 👤 Users
+
+## Get Authenticated User
+
+`GET /api/user`  
 🔒 Requires Authentication
 
-Get All Users
+## Get All Users
 
-GET /users
+`GET /api/users`  
 🔒 Requires Authentication
 
-Get User by ID
+## Get User by ID
 
-GET /user/{user}
+`GET /api/user/{user}`
 
-Get User by Username
+## Get User by Username
 
-GET /user/by/username/{user_name}
+`GET /api/user/by/username/{user_name}`
 
-Get User Posts
+## Get User Posts
 
-GET /user/{user}/posts
+`GET /api/user/{user}/posts`
 
-Get User Comments
+## Get User Comments
 
-GET /user/{user}/comments
+`GET /api/user/{user}/comments`  
 🔒 Requires Authentication
 
-Follow User
+## Follow User
 
-POST /user/{user}/follow
+`POST /api/user/{user}/follow`  
 🔒 Requires Authentication
 
-Unfollow User
+## Unfollow User
 
-DELETE /user/{user}/unfollow
+`DELETE /api/user/{user}/unfollow`  
 🔒 Requires Authentication
 
-Get User Follows
+## Get User Follows
 
-GET /user/{user}/follows
+`GET /api/user/{user}/follows`  
 🔒 Requires Authentication
 
-Get User Followers
+## Get User Followers
 
-GET /user/{user}/followers
+`GET /api/user/{user}/followers`  
 🔒 Requires Authentication
 
-Get Common Follows
+## Get Common Follows
 
-GET /user/{user}/common_follows
+`GET /api/user/{user}/common_follows`  
 🔒 Requires Authentication
 
-🔔 Notifications
-Get Notifications
+---
 
-GET /notifications
+# 🔔 Notifications
+
+## Get Notifications
+
+`GET /api/notifications`  
 🔒 Requires Authentication
 
-Mark All Notifications as Read
+## Mark All Notifications as Read
 
-POST /mark_all_notifications_as_read
+`POST /api/mark_all_notifications_as_read`  
 🔒 Requires Authentication
 
-Mark Single Notification as Read
+## Mark Single Notification as Read
 
-POST /mark_notification_as_read/{notification}
+`POST /api/mark_notification_as_read/{notification}`  
 🔒 Requires Authentication
 
-📂 Categories
-Get All Categories
+---
 
-GET /categories
+# 📂 Categories
 
-🛠 Tech Stack
+## Get All Categories
 
-PHP
+`GET /api/categories`
 
-Laravel
+---
 
-RESTful API
+# 🛠 Tech Stack
 
-Token-based Authentication
+- PHP
+- Laravel
+- RESTful API
+- Token-based Authentication
